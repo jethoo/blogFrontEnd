@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
+import loginService from './services/login'
 
 const App = () => {
   //states
   const [ username, setUsername ] = useState('')
   const [ password, setPassword ] = useState('')
   const [ user, setUser ] = useState(null)
-  
+  const [ errorMessage, setErrorMessage ] = useState(null)
+
   //loginForm
   const loginForm = () => (
     <form onSubmit={handleLogin}>
@@ -33,10 +35,28 @@ const App = () => {
     </form>      
   )
 
+  //
+
   const handleLogin = async (event) => {
     event.preventDefault()
 
-    console.log('username is ', username, 'password is', password)
+    try{
+      const user = await loginService.login({
+        username, password
+      })
+
+      //noteService.setToken(user.token)
+      console.log('user is', user)
+      setUser(user)
+      setUsername('')
+      setPassword('')
+    } catch (exception){
+      setErrorMessage(' Username or password do not match ')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+
   }
 
   const [blogs, setBlogs] = useState([])
