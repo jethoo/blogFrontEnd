@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
   //states
@@ -10,11 +11,6 @@ const App = () => {
   const [ password, setPassword ] = useState('')
   const [ user, setUser ] = useState(null)
   const [blogs, setBlogs] = useState([])
-
-  //blog attributes states 
-  const [title, setTitle ] = useState('')
-  const [author, setAuthor ] = useState('')
-  const [url, setUrl ] = useState('')
 
   //notification messages
   const [errorMessage, setErrorMessage] = useState();
@@ -65,70 +61,20 @@ const App = () => {
     </>   
   )
   
- //create blog Form 
- const blogForm = () => {
-   return (
-    <>
-      <h2>create new</h2>
-      <form onSubmit={addBlog}>
-        title:
-        <input 
-          value={title}
-          onChange={handletitleChange}
-        />
-    
-        author:
-        <input 
-          value={author}
-          onChange={handleauthorChange}/>
-        url:
-        <input 
-          value={url}
-          onChange={handleurlChange}/>
-          <button type="submit">create</button>
-      </form>
-    </>
-   )
-}
-
-  const handletitleChange = (event) => 
+  const addBlog = (blogObject) => 
   {
-    setTitle(event.target.value)
-  }
-
-  const handleauthorChange = (event) => 
-  {
-    setAuthor(event.target.value)
-  }
-
-  const handleurlChange = (event) => 
-  {
-    setUrl(event.target.value)
-  }
-
-  const addBlog = (event) => 
-  {
-    event.preventDefault()
-    const blogObject = {
-      title: title,
-      author: author,
-      url: url
-    }
+    //instead of event receives blogObject
     blogService
       .create(blogObject)
       .then(returnedBlog => {
         // if it's a success
-        console.log('returnedBlog', returnedBlog)
         setSuccessMessage(
-          `a new blog ${title} by ${author} added`
+          `a new blog ${BlogForm.title} by ${BlogForm.author} added`
         )
         setTimeout(() => {
           setSuccessMessage(null)
         }, 5000)
         setBlogs(blogs.concat(returnedBlog))
-        setTitle('')
-        setAuthor('')
-        setUrl('')
       })
       // if backend rejects creating blog 
       .catch(error => {
@@ -150,7 +96,7 @@ const App = () => {
 
         {user ? <><p>{user.name} logged in</p><button onClick={handleLogout}>logout</button></>: ''}
 
-        {blogForm()}
+        <BlogForm />
         {console.log('blogs', blogs)}
         {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
