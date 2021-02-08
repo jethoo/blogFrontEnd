@@ -1,20 +1,23 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 
 const App = () => {
   //states
   const [ username, setUsername ] = useState('')
   const [ password, setPassword ] = useState('')
   const [ user, setUser ] = useState(null)
-  const [blogs, setBlogs] = useState([])
+  const [ blogs, setBlogs ] = useState([])
 
   //notification messages
   const [errorMessage, setErrorMessage] = useState();
   const [successMessage, setSuccessMessage] = useState();
+
+  const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -60,16 +63,27 @@ const App = () => {
     </form>   
     </>   
   )
+
+  //sort by max likes 
+  blogs.sort((a,b) => {
+    return b.likes - a.likes
+  })
   
+  const blogForm = () => (
+    <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+      <BlogForm blogObject={addBlog}/>
+    </Togglable>
+  )
+
   const addBlog = (blogObject) => 
   {
     //instead of event receives blogObject
+    blogFormRef.current.toggleVisibility()
     blogService
       .create(blogObject)
       .then(returnedBlog => {
-        // if it's a success
         setSuccessMessage(
-          `a new blog ${BlogForm.title} by ${BlogForm.author} added`
+          `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`
         )
         setTimeout(() => {
           setSuccessMessage(null)
@@ -87,17 +101,15 @@ const App = () => {
       })
   }
 
-  
   //component for displaying blogs
   const blogComponent = () => {
     return (
       <div>
         <h2>blogs</h2>
 
-        {user ? <><p>{user.name} logged in</p><button onClick={handleLogout}>logout</button></>: ''}
+        {user ? <><p>{user.name} logged in<button onClick={handleLogout} className="logoutBut">logout</button></p></>: ''}
 
-        <BlogForm />
-        {console.log('blogs', blogs)}
+        {blogForm()}
         {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
        )}

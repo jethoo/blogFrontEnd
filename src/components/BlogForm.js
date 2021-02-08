@@ -1,4 +1,5 @@
 import React, {useState} from 'react' 
+import Notification from './Notification'
 
 const BlogForm = ({ blogObject }) => {
     //states
@@ -6,6 +7,10 @@ const BlogForm = ({ blogObject }) => {
     const [title, setTitle ] = useState('')
     const [author, setAuthor ] = useState('')
     const [url, setUrl ] = useState('')
+
+    //notification messages
+    const [errorMessage, setErrorMessage] = useState();
+    const [successMessage, setSuccessMessage] = useState();
     
     const handletitleChange = (event) => 
     {
@@ -24,11 +29,34 @@ const BlogForm = ({ blogObject }) => {
 
     const addBlog = (event) => {
         event.preventDefault()
-        blogObject({
-        title: title,
-        author: author,
-        url: url
-        })
+        if(title.length === 0){
+            setErrorMessage(
+                'Title missing'
+              )
+              setTimeout(() => {
+                setErrorMessage(null)
+              }, 5000)
+          }else if(author.length === 0){
+            setErrorMessage(
+                'Author missing'
+              )
+              setTimeout(() => {
+                setErrorMessage(null)
+              }, 5000)
+          }else if(url.length === 0){
+            setErrorMessage(
+                'Url missing'
+              )
+              setTimeout(() => {
+                setErrorMessage(null)
+              }, 5000)
+          }else {
+            blogObject({
+                title: title,
+                author: author,
+                url: url
+                })
+          }
         setTitle('')
         setAuthor('')
         setUrl('')
@@ -36,6 +64,8 @@ const BlogForm = ({ blogObject }) => {
 
     return (
         <>
+             <Notification errorMessage={errorMessage} successMessage={successMessage}/>
+
             <h2>create new</h2>
             <form onSubmit={addBlog}>
                 title:
