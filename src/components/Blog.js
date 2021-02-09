@@ -44,17 +44,19 @@ const Blog = ({ blog }) => {
    }
 
    const handleRemove = async () => {
-    
+
      try{
-        const result = await blogService.remove(blog.id)
-        if(result === 204){
-          setSuccessMessage(
-            `blog with title '${blog.title}' has been deleted`
-          )
-          setTimeout(() => {
-            setSuccessMessage(null)
-          }, 5000)
-        }
+       if(window.confirm(`Remove blog ${blog.title} by ${blog.author}`)){
+          const result = await blogService.remove(blog.id)
+          if(result === 204){
+            setSuccessMessage(
+              `blog with title '${blog.title}' has been deleted`
+            )
+            setTimeout(() => {
+              setSuccessMessage(null)
+            }, 5000)
+          }
+       }
      }catch(exception){
       setErrorMessage(
         `blog with title '${blog.title}' could not be deleted, , ${exception.message}`
