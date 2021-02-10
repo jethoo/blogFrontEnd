@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import React, { useState } from 'react'
 import blogService from '../services/blogs'
 import Notification from './Notification'
@@ -7,11 +8,11 @@ const Blog = ({ blog }) => {
   const [view, setView] = useState(false)
 
   //notification messages
-  const [errorMessage, setErrorMessage] = useState();
-  const [successMessage, setSuccessMessage] = useState();
+  const [errorMessage, setErrorMessage] = useState()
+  const [successMessage, setSuccessMessage] = useState()
 
   //show when view true
-  const showWhenView = { display: view ? '': 'none'}
+  const showWhenView = { display: view ? '': 'none' }
 
   const blogStyle= {
     paddingTop: 10,
@@ -22,7 +23,8 @@ const Blog = ({ blog }) => {
   }
 
   const handleLike = async () => {
-    const newBlogwithLikeUpdated = {...blog, ...blog.likes += 1}
+    // eslint-disable-next-line no-unused-vars
+    const newBlogwithLikeUpdated = { ...blog, ...blog.likes += 1 }
     try{
       const result = await blogService.update(blog.id, blog)
       if (result){
@@ -32,7 +34,7 @@ const Blog = ({ blog }) => {
         setTimeout(() => {
           setSuccessMessage(null)
         }, 5000)
-    }
+      }
     }catch(exception){
       setErrorMessage(
         `blog could not updated, , ${exception.message}`
@@ -40,48 +42,47 @@ const Blog = ({ blog }) => {
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
-    } 
-   }
+    }
+  }
 
-   const handleRemove = async () => {
-
-     try{
-       if(window.confirm(`Remove blog ${blog.title} by ${blog.author}`)){
-          const result = await blogService.remove(blog.id)
-          if(result === 204){
-            setSuccessMessage(
-              `blog with title '${blog.title}' has been deleted`
-            )
-            setTimeout(() => {
-              setSuccessMessage(null)
-            }, 5000)
-          }
-       }
-     }catch(exception){
+  const handleRemove = async () => {
+    try{
+      if(window.confirm(`Remove blog ${blog.title} by ${blog.author}`)){
+        const result = await blogService.remove(blog.id)
+        if(result === 204){
+          setSuccessMessage(
+            `blog with title '${blog.title}' has been deleted`
+          )
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 5000)
+        }
+      }
+    }catch(exception){
       setErrorMessage(
         `blog with title '${blog.title}' could not be deleted, , ${exception.message}`
       )
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
-     }
-   }
-  
+    }
+  }
+
   return (
     <>
-    <Notification errorMessage={errorMessage} successMessage={successMessage}/>
-    <div style={blogStyle}>
-      <div>
-        <p>{blog.title}<button onClick={() => setView(!view)}>{view ? 'hide' : 'view'}</button></p>
-        <div style={showWhenView}>
-          <p>{blog.url}</p>
-          <p>likes {blog.likes} <button onClick={handleLike}>like</button></p>
-          <p>{blog.author}</p>
-          <button onClick={handleRemove}>remove</button>
+      <Notification errorMessage={errorMessage} successMessage={successMessage}/>
+      <div style={blogStyle}>
+        <div>
+          <p>{blog.title}<button onClick={() => setView(!view)}>{view ? 'hide' : 'view'}</button></p>
+          <div style={showWhenView} className="viewAfterClick">
+            <p>{blog.url}</p>
+            <p>likes {blog.likes} <button onClick={handleLike}>like</button></p>
+            <p>{blog.author}</p>
+            <button onClick={handleRemove}>remove</button>
+          </div>
         </div>
       </div>
-    </div>
-   </>
+    </>
   )
 }
 

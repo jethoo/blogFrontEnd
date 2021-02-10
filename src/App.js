@@ -14,18 +14,18 @@ const App = () => {
   const [ blogs, setBlogs ] = useState([])
 
   //notification messages
-  const [errorMessage, setErrorMessage] = useState();
-  const [successMessage, setSuccessMessage] = useState();
+  const [errorMessage, setErrorMessage] = useState()
+  const [successMessage, setSuccessMessage] = useState()
 
   const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
-  //run useEffect for every render to check if user is already logged In 
+  //run useEffect for every render to check if user is already logged In
   //credentials stored in local storage
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -39,43 +39,43 @@ const App = () => {
   //loginForm
   const loginForm = () => (
     <>
-    <h1>log in to application</h1>
-    <form onSubmit={handleLogin}>
-      <div>
+      <h1>log in to application</h1>
+      <form onSubmit={handleLogin}>
+        <div>
         username
           <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
+            type="text"
+            value={username}
+            name="Username"
+            onChange={({ target }) => setUsername(target.value)}
+          />
+        </div>
+        <div>
         password
           <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>   
-    </>   
+            type="password"
+            value={password}
+            name="Password"
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </div>
+        <button type="submit">login</button>
+      </form>
+    </>
   )
 
-  //sort by max likes 
+  //sort by max likes
   blogs.sort((a,b) => {
     return b.likes - a.likes
   })
-  
+
   const blogForm = () => (
     <Togglable buttonLabel="create new blog" ref={blogFormRef}>
       <BlogForm blogObject={addBlog}/>
     </Togglable>
   )
 
-  const addBlog = (blogObject) => 
+  const addBlog = (blogObject) =>
   {
     //instead of event receives blogObject
     blogFormRef.current.toggleVisibility()
@@ -90,7 +90,7 @@ const App = () => {
         }, 5000)
         setBlogs(blogs.concat(returnedBlog))
       })
-      // if backend rejects creating blog 
+      // if backend rejects creating blog
       .catch(error => {
         setErrorMessage(
           `Blog could not be added , ${error.message}`
@@ -111,16 +111,16 @@ const App = () => {
 
         {blogForm()}
         {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-       )}
+          <Blog key={blog.id} blog={blog} />
+        )}
       </div>
     )
   }
 
   //
   const handleLogout = () => {
-   window.localStorage.clear()
-   setUser(null)
+    window.localStorage.clear()
+    setUser(null)
   }
 
   const handleLogin = async (event) => {
@@ -144,7 +144,7 @@ const App = () => {
       }, 5000)
     }
   }
-  
+
   return (
     <div>
       <Notification errorMessage={errorMessage} successMessage={successMessage}/>
