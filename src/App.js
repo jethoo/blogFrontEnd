@@ -47,6 +47,7 @@ const App = () => {
             type="text"
             value={username}
             name="Username"
+            id='username'
             onChange={({ target }) => setUsername(target.value)}
           />
         </div>
@@ -56,10 +57,11 @@ const App = () => {
             type="password"
             value={password}
             name="Password"
+            id='password'
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <button type="submit">login</button>
+        <button id='login-button' type="submit">login</button>
       </form>
     </>
   )
@@ -107,7 +109,7 @@ const App = () => {
       <div>
         <h2>blogs</h2>
 
-        {user ? <><p>{user.name} logged in<button onClick={handleLogout} className="logoutBut">logout</button></p></>: ''}
+        {user ? <><p>{user.name} logged in<button onClick={handleLogout} className="logoutBut" id="log-out">logout</button></p></>: ''}
 
         {blogForm()}
         {blogs.map(blog =>
